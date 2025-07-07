@@ -1,13 +1,15 @@
-
 import { useState } from 'react';
 import { MoodSelector } from '@/components/MoodSelector';
 import { MovieRecommendations } from '@/components/MovieRecommendations';
 import { ChatInterface } from '@/components/ChatInterface';
 import { Header } from '@/components/Header';
+import { LanguageSelector } from '@/components/LanguageSelector';
 import { Movie } from '@/types/movie';
 
 const Index = () => {
   const [currentMood, setCurrentMood] = useState<string>('');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('any');
+  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [showChat, setShowChat] = useState(false);
@@ -16,12 +18,12 @@ const Index = () => {
     setCurrentMood(mood);
     setShowRecommendations(true);
     
-    // Simulate AI movie recommendations based on mood
-    const mockMovies = await generateMockRecommendations(mood);
+    // Simulate AI movie recommendations based on mood and language
+    const mockMovies = await generateMockRecommendations(mood, selectedLanguage);
     setMovies(mockMovies);
   };
 
-  const generateMockRecommendations = async (mood: string): Promise<Movie[]> => {
+  const generateMockRecommendations = async (mood: string, language: string): Promise<Movie[]> => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
@@ -29,23 +31,25 @@ const Index = () => {
       sad: [
         {
           id: 1,
-          title: "The Pursuit of Happyness",
+          title: language === 'es' ? "En Busca de la Felicidad" : "The Pursuit of Happyness",
           overview: "A touching story about perseverance and hope that will remind you that tough times don't last forever.",
           genres: ["Drama", "Biography"],
           rating: 8.0,
           releaseYear: 2006,
           poster: "https://images.unsplash.com/photo-1489599735188-1edf7d59e22e?w=300&h=450&fit=crop",
-          reason: "A beautiful reminder that hope can bloom even in the darkest moments"
+          reason: "A beautiful reminder that hope can bloom even in the darkest moments",
+          language: language === 'any' ? 'English' : language
         },
         {
           id: 2,
-          title: "Inside Out",
+          title: language === 'fr' ? "Vice-Versa" : "Inside Out",
           overview: "An animated masterpiece that helps you understand and embrace all your emotions, including sadness.",
           genres: ["Animation", "Family", "Comedy"],
           rating: 8.1,
           releaseYear: 2015,
           poster: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=450&fit=crop",
-          reason: "Teaches us that it's okay to feel sad and that all emotions have value"
+          reason: "Teaches us that it's okay to feel sad and that all emotions have value",
+          language: language === 'any' ? 'English' : language
         }
       ],
       happy: [
@@ -57,7 +61,8 @@ const Index = () => {
           rating: 8.2,
           releaseYear: 2014,
           poster: "https://images.unsplash.com/photo-1478720568477-b2709d1d7aec?w=300&h=450&fit=crop",
-          reason: "Pure joy and whimsy that will keep your spirits soaring"
+          reason: "Pure joy and whimsy that will keep your spirits soaring",
+          language: language === 'any' ? 'English' : language
         },
         {
           id: 4,
@@ -67,19 +72,21 @@ const Index = () => {
           rating: 8.1,
           releaseYear: 2014,
           poster: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=300&h=450&fit=crop",
-          reason: "Visually stunning and charmingly eccentric - perfect for a good mood"
+          reason: "Visually stunning and charmingly eccentric - perfect for a good mood",
+          language: language === 'any' ? 'English' : language
         }
       ],
       stressed: [
         {
           id: 5,
-          title: "Studio Ghibli Collection",
+          title: language === 'ja' ? "となりのトトロ" : "Studio Ghibli Collection",
           overview: "Peaceful, magical worlds that transport you away from everyday worries.",
           genres: ["Animation", "Fantasy", "Family"],
           rating: 8.5,
           releaseYear: 2001,
           poster: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=450&fit=crop",
-          reason: "Soothing animation and gentle storytelling to calm your mind"
+          reason: "Soothing animation and gentle storytelling to calm your mind",
+          language: language === 'any' ? 'Japanese' : language
         }
       ],
       excited: [
@@ -91,7 +98,8 @@ const Index = () => {
           rating: 8.4,
           releaseYear: 2018,
           poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?w=300&h=450&fit=crop",
-          reason: "High-energy storytelling with incredible visual creativity"
+          reason: "High-energy storytelling with incredible visual creativity",
+          language: language === 'any' ? 'English' : language
         }
       ]
     };
@@ -131,7 +139,16 @@ const Index = () => {
               </p>
             </div>
             
-            <MoodSelector onMoodSubmit={handleMoodSubmit} />
+            <div className="space-y-6">
+              <LanguageSelector 
+                selectedLanguage={selectedLanguage}
+                onLanguageChange={setSelectedLanguage}
+                showLanguageSelector={showLanguageSelector}
+                onToggleLanguageSelector={() => setShowLanguageSelector(!showLanguageSelector)}
+              />
+              
+              <MoodSelector onMoodSubmit={handleMoodSubmit} />
+            </div>
           </div>
         ) : (
           <div className="animate-fade-in">

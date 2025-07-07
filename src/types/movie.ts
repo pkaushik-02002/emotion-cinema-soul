@@ -9,4 +9,11 @@ export interface Movie {
   poster: string;
   reason: string;
   isFavorite?: boolean;
+  language?: string;
+}
+
+export interface LanguageOption {
+  code: string;
+  name: string;
+  flag: string;
 }
